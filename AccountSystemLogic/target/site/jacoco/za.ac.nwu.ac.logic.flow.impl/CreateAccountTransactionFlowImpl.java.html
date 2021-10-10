@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateAccountTransactionFlowImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AccountSystemLogic</a> &gt; <a href="index.source.html" class="el_package">za.ac.nwu.ac.logic.flow.impl</a> &gt; <span class="el_source">CreateAccountTransactionFlowImpl.java</span></div><h1>CreateAccountTransactionFlowImpl.java</h1><pre class="source lang-java linenums">package za.ac.nwu.ac.logic.flow.impl;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import za.ac.nwu.ac.domain.dto.AccountTransactionDto;
+import za.ac.nwu.ac.domain.exception.AccountTransactionCreationException;
+import za.ac.nwu.ac.domain.persistence.AccountTransaction;
+import za.ac.nwu.ac.domain.persistence.AccountTransactionDetails;
+import za.ac.nwu.ac.domain.persistence.AccountType;
+import za.ac.nwu.ac.logic.flow.CreateAccountTransactionFlow;
+import za.ac.nwu.ac.logic.flow.FetchAccountTypeFlow;
+import za.ac.nwu.ac.translator.AccountTransactionDetailsTranslator;
+import za.ac.nwu.ac.translator.AccountTransactionTranslator;
+
+import javax.transaction.Transactional;
+
+@Transactional
+@Component
+<span class="nc" id="L20">@Slf4j</span>
+public class CreateAccountTransactionFlowImpl implements CreateAccountTransactionFlow {
+
+    private AccountTransactionTranslator translator;
+    private FetchAccountTypeFlow fetchAccountTypeFlow;
+    private AccountTransactionDetailsTranslator accountTransactionDetailsTranslator;
+
+    @Autowired
+<span class="nc" id="L28">    public CreateAccountTransactionFlowImpl(AccountTransactionTranslator translator, FetchAccountTypeFlow fetchAccountTypeFlow, AccountTransactionDetailsTranslator accountDetailsTranslator) {</span>
+<span class="nc" id="L29">        this.translator = translator;</span>
+<span class="nc" id="L30">        this.fetchAccountTypeFlow = fetchAccountTypeFlow;</span>
+<span class="nc" id="L31">        this.accountTransactionDetailsTranslator = accountDetailsTranslator;</span>
+<span class="nc" id="L32">    }</span>
+
+
+    @Override
+    public AccountTransactionDto create(AccountTransactionDto accountTransactionDto) {
+<span class="nc" id="L37">        accountTransactionDto.setTransactionId(null);</span>
+<span class="nc" id="L38">        AccountType accountType = fetchAccountTypeFlow.getAccountTypeDBEntitiesByMnemonic(accountTransactionDto.getAccountTypeMnemonic());</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (null == accountType){</span>
+<span class="nc" id="L40">            log.error(&quot;Account Type not found for Mnemonic : {}&quot;, accountTransactionDto.getAccountTypeMnemonic());</span>
+<span class="nc" id="L41">            throw new AccountTransactionCreationException(&quot;Account Transaction creation exeption&quot;);</span>
+        }
+<span class="nc" id="L43">        AccountTransaction accountTransaction = accountTransactionDto.buildAccountTransaction(accountType);</span>
+
+<span class="nc" id="L45">        AccountTransaction createdAccountTransaction = translator.save(accountTransaction);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (null != accountTransactionDto.getDetails()){</span>
+<span class="nc" id="L47">            AccountTransactionDetails accountTransactionDetails = accountTransactionDto.getDetails().buildAccountTransactionDetails(createdAccountTransaction);</span>
+<span class="nc" id="L48">            accountTransactionDetailsTranslator.save(accountTransactionDetails);</span>
+        }
+<span class="nc" id="L50">        return new AccountTransactionDto(createdAccountTransaction);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

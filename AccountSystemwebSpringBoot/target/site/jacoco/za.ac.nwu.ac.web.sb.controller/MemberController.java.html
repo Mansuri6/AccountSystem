@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MemberController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AccountSystemWebSpringBoot</a> &gt; <a href="index.source.html" class="el_package">za.ac.nwu.ac.web.sb.controller</a> &gt; <span class="el_source">MemberController.java</span></div><h1>MemberController.java</h1><pre class="source lang-java linenums">package za.ac.nwu.ac.web.sb.controller;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import za.ac.nwu.ac.domain.dto.AccountTransactionDto;
+import za.ac.nwu.ac.domain.dto.MemberDetailsDto;
+import za.ac.nwu.ac.domain.service.GeneralResponse;
+import za.ac.nwu.ac.logic.flow.FetchAccountTransactionFlow;
+import za.ac.nwu.ac.logic.flow.UpdateAccountTransactionFlow;
+
+@RestController
+@RequestMapping(&quot;member_transaction&quot;)
+public class MemberController {
+
+    private final FetchAccountTransactionFlow fetchAccountTransactionFlow;
+    private final UpdateAccountTransactionFlow updateAccountTransactionFlow;
+
+    @Autowired
+<span class="nc" id="L28">    public MemberController(FetchAccountTransactionFlow fetchAccountTransactionFlow, UpdateAccountTransactionFlow updateAccountTransactionFlow) {</span>
+<span class="nc" id="L29">        this.fetchAccountTransactionFlow = fetchAccountTransactionFlow;</span>
+<span class="nc" id="L30">        this.updateAccountTransactionFlow = updateAccountTransactionFlow;</span>
+<span class="nc" id="L31">    }</span>
+
+    @PostMapping(&quot;/add&quot;)
+    @ApiOperation(value = &quot;Add miles for a new member&quot;, notes = &quot;Add miles for a new member&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = &quot;miles added successfully&quot;, response = GeneralResponse.class),
+            @ApiResponse(code = 400, message = &quot;Bad Request&quot;, response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = &quot;Internal server error&quot;, response = GeneralResponse.class)
+    }
+    )
+    public ResponseEntity&lt;GeneralResponse&lt;AccountTransactionDto&gt;&gt; add(
+            @ApiParam(value = &quot;RequestBody to create a add miles for account transaction&quot;, required = true)
+            @RequestBody MemberDetailsDto memberDetailsDto
+    ){
+
+<span class="nc" id="L46">        AccountTransactionDto accountTransactionResponse = updateAccountTransactionFlow.updateAdd(memberDetailsDto);</span>
+<span class="nc" id="L47">        GeneralResponse&lt;AccountTransactionDto&gt; response = new GeneralResponse&lt;&gt;(true, accountTransactionResponse);</span>
+<span class="nc" id="L48">        return new ResponseEntity&lt;&gt;(response, HttpStatus.OK);</span>
+    }
+
+    @PostMapping(&quot;/subtract&quot;)
+    @ApiOperation(value = &quot;Delete miles for a new member&quot;, notes = &quot;Delete miles for a new member&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = &quot;miles Deleted successfully&quot;, response = GeneralResponse.class),
+            @ApiResponse(code = 400, message = &quot;Bad Request&quot;, response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = &quot;Internal server error&quot;, response = GeneralResponse.class)
+    }
+    )
+    public ResponseEntity&lt;GeneralResponse&lt;AccountTransactionDto&gt;&gt; delete(
+            @ApiParam(value = &quot;RequestBody to create a delete miles for account transaction&quot;, required = true)
+            @RequestBody MemberDetailsDto memberDetailsDto
+    ){
+
+<span class="nc" id="L64">        AccountTransactionDto accountTransactionResponse = updateAccountTransactionFlow.updateDelete(memberDetailsDto);</span>
+<span class="nc" id="L65">        GeneralResponse&lt;AccountTransactionDto&gt; response = new GeneralResponse&lt;&gt;(true, accountTransactionResponse);</span>
+<span class="nc" id="L66">        return new ResponseEntity&lt;&gt;(response, HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

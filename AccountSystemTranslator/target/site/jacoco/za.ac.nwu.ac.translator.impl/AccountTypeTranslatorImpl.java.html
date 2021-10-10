@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountTypeTranslatorImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AccountSystemTranslator</a> &gt; <a href="index.source.html" class="el_package">za.ac.nwu.ac.translator.impl</a> &gt; <span class="el_source">AccountTypeTranslatorImpl.java</span></div><h1>AccountTypeTranslatorImpl.java</h1><pre class="source lang-java linenums">package za.ac.nwu.ac.translator.impl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import za.ac.nwu.ac.domain.dto.AccountTypeDto;
+import za.ac.nwu.ac.domain.exception.AccountTypeCreationException;
+import za.ac.nwu.ac.domain.exception.AccountTypeNotFoundException;
+import za.ac.nwu.ac.domain.exception.DatabaseFindFetchException;
+import za.ac.nwu.ac.domain.persistence.AccountType;
+import za.ac.nwu.ac.repo.persistence.AccountTypeRepository;
+import za.ac.nwu.ac.translator.AccountTypeTranslator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Component
+public class AccountTypeTranslatorImpl implements AccountTypeTranslator {
+
+<span class="fc" id="L22">    private final Logger logger = LoggerFactory.getLogger(AccountTypeTranslatorImpl.class);</span>
+
+    private final AccountTypeRepository accountTypeRepository;
+
+    @Autowired
+<span class="fc" id="L27">    public AccountTypeTranslatorImpl(AccountTypeRepository accountTypeRepository) {</span>
+<span class="fc" id="L28">        this.accountTypeRepository = accountTypeRepository;</span>
+<span class="fc" id="L29">    }</span>
+
+    @Override
+    public List&lt;AccountTypeDto&gt; getAllAccountTypes() {
+<span class="fc" id="L33">        List&lt;AccountTypeDto&gt; accountTypeDtoList = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            for (AccountType accountType : accountTypeRepository.findAll()) {</span>
+<span class="fc" id="L36">                accountTypeDtoList.add(new AccountTypeDto(accountType));</span>
+<span class="fc" id="L37">            }</span>
+<span class="nc" id="L38">        } catch (RuntimeException ex){</span>
+<span class="nc" id="L39">            logger.error(&quot;Unable to read from DB&quot;, ex);</span>
+<span class="nc" id="L40">            throw new DatabaseFindFetchException(&quot;Unable to read from DB&quot;, ex);</span>
+<span class="fc" id="L41">        }</span>
+<span class="fc" id="L42">        logger.info(&quot;Account Type retrieved {} &quot;, accountTypeDtoList);</span>
+<span class="fc" id="L43">        return accountTypeDtoList;</span>
+    }
+
+    @Override
+    public AccountTypeDto create(AccountTypeDto accountTypeDto) {
+        try {
+<span class="fc" id="L49">            AccountType accountType = accountTypeRepository.save(accountTypeDto.getAccountType());</span>
+<span class="fc" id="L50">            logger.info(&quot;Account Type crated {} &quot;, accountType);</span>
+<span class="fc" id="L51">            return new AccountTypeDto(accountType);</span>
+<span class="nc" id="L52">        } catch (RuntimeException ex){</span>
+<span class="nc" id="L53">            logger.error(&quot;Unable to read from DB&quot;, ex);</span>
+<span class="nc" id="L54">            throw new AccountTypeCreationException(&quot;Unable to save into DB&quot;, ex);</span>
+        }
+    }
+
+    @Override
+    public AccountTypeDto getAccountTypeByMnemonic(String mnemonic) {
+        try {
+<span class="fc" id="L61">            logger.info(&quot;Request for mnemonic : {}&quot;, mnemonic);</span>
+<span class="fc" id="L62">            AccountType accountType = accountTypeRepository.getAccountTypeByMnemonic(mnemonic);</span>
+<span class="fc" id="L63">            logger.info(&quot;Account Type retrieved {} &quot;, accountType);</span>
+<span class="fc" id="L64">            return new AccountTypeDto(accountType);</span>
+<span class="nc" id="L65">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L66">            logger.error(&quot;Unable to read from DB&quot;, ex);</span>
+<span class="nc" id="L67">            throw new DatabaseFindFetchException(&quot;Unable to read from DB&quot;, ex);</span>
+        }
+    }
+
+    @Override
+    public AccountTypeDto getAccountTypeByMnemonicNativeQuery(String mnemonic) {
+        try {
+<span class="fc" id="L74">            logger.info(&quot;Request for mnemonic : {}&quot;, mnemonic);</span>
+<span class="fc" id="L75">            AccountType accountType = accountTypeRepository.getAccountTypeByMnemonicNativeQuery(mnemonic);</span>
+<span class="fc" id="L76">            logger.info(&quot;Account Type retrieved {} &quot;, accountType);</span>
+<span class="fc" id="L77">            return new AccountTypeDto(accountType);</span>
+<span class="nc" id="L78">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L79">            logger.error(&quot;Unable to read from DB&quot;, ex);</span>
+<span class="nc" id="L80">            throw new DatabaseFindFetchException(&quot;Unable to read from DB&quot;, ex);</span>
+        }
+    }
+
+    @Override
+    public AccountType getAccountTypeDBEntitiesByMnemonic(String mnemonic) {
+        AccountType accountType;
+        try {
+<span class="nc" id="L88">            logger.info(&quot;Request for mnemonic : {}&quot;, mnemonic);</span>
+<span class="nc" id="L89">            accountType = accountTypeRepository.getAccountTypeByMnemonic(mnemonic);</span>
+<span class="nc" id="L90">            logger.info(&quot;Account Type retrieved {} &quot;, accountType);</span>
+<span class="nc" id="L91">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L92">            logger.error(&quot;Unable to read from DB&quot;, ex);</span>
+<span class="nc" id="L93">            throw new DatabaseFindFetchException(&quot;Unable to read from DB&quot;, ex);</span>
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">        return accountType;</span>
+    }
+
+    @Override
+    public AccountTypeDto deleteAccountTypeByMnemonic(String mnemonic) throws DatabaseFindFetchException, AccountTypeNotFoundException{
+        try {
+<span class="fc" id="L101">            logger.info(&quot;Delete request for mnemonic : {}&quot;, mnemonic);</span>
+<span class="fc" id="L102">            AccountType accountType = accountTypeRepository.deleteAccountTypeByMnemonic(mnemonic);</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            if (!Optional.ofNullable(accountType).isPresent()) {</span>
+<span class="nc" id="L104">                logger.error(&quot;Account Type not available for {}&quot;, mnemonic);</span>
+<span class="nc" id="L105">                throw new AccountTypeNotFoundException(&quot;Account Type not available&quot;);</span>
+            }
+<span class="fc" id="L107">            logger.info(&quot;Account Type deleted {} &quot;, accountType);</span>
+<span class="fc" id="L108">            return new AccountTypeDto(accountType);</span>
+<span class="nc" id="L109">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L110">            logger.error(&quot;Account Type not available for {}&quot;, mnemonic);</span>
+<span class="nc" id="L111">            throw new DatabaseFindFetchException(&quot;Unable to read from DB&quot;, ex);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

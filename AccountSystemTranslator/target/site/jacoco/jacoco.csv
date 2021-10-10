@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+AccountSystemTranslator,za.ac.nwu.ac.translator.impl,AccountTransactionDetailsTranslatorImpl,19,0,0,0,6,0,2,0,2,0
+AccountSystemTranslator,za.ac.nwu.ac.translator.impl,AccountTypeTranslatorImpl,100,123,1,3,25,27,2,7,1,6
+AccountSystemTranslator,za.ac.nwu.ac.translator.impl,AccountTransactionTranslatorImpl,89,0,2,0,25,0,7,0,6,0
+AccountSystemTranslator,za.ac.nwu.ac.translator.config,TranslatorConfig,3,0,0,0,1,0,1,0,1,0
